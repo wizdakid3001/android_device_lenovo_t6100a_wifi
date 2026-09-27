@@ -25,6 +25,7 @@ jobs:
         run: |
                mkdir twrp_workspace
                cd twrp_workspace
+               export PYTHONTTPSVERIFY=0
                repo init --depth=1 -u https://github.com -b twrp-12.1
 
       - name: Sync TWRP Source Code
