@@ -16,39 +16,39 @@ jobs:
            sudo apt-get update
            sudo apt-get install build-essential git python3 repo libxml2-utils
 
-           - name: Set Up Git Credentials
-             run: |
+      - name: Set Up Git Credentials
+        run: |
              git config --global user.email "arnolds7718@gmail.com"
              git config --global user.name "wizdakid3001"
 
-             - name: Initialize Repo Source
-               run: |
+      - name: Initialize Repo Source
+        run: |
                mkdir twrp_workspace
                cd twrp_workspace
                repo init --depth=1 -u https://github.com -b twrp-12.1
 
-               - name: Sync TWRP Source Code
-                 run: |
+      - name: Sync TWRP Source Code
+        run: |
                  cd twrp_workspace
                  repo sync -c -j$(nproc --all) --force-sync --no-clone-bundle --no-tags
 
-                 - name: Insert Your Custom Device Tree
-                   run: |
+      - name: Insert Your Custom Device Tree
+        run: |
                    mkdir -p twrp_workspace/device/lenovo/t6100a_wifi
                    cp -r ./* twrp_workspace/device/lenovo/t6100a_wifi/
                    rm -rf twrp_workspace/device/lenovo/t6100a_wifi/.git
                    rm -rf twrp_workspace/device/lenovo/t6100a_wifi/.github
 
-                   - name: Compile the Recovery Image
-                     run: |
+      - name: Compile the Recovery Image
+        run: |
                      cd twrp_workspace
                      export ALLOW_MISSING_DEPENDENCIES=true
                      source build/envsetup.sh
                      lunch twrp_t6100a_wifi-eng
                      mka recoveryimage -j$(nproc --all)
 
-                     - name: Upload the Compiled Build Target
-                     uses: actions/upload-artifact@v4
-                     with:
+      - name: Upload the Compiled Build Target
+        uses: actions/upload-artifact@v4
+        with:
                        name: TWRP-Recovery-t6100a_wifi
                        path: twrp_workspace/out/target/product/t6100a_wifi/recovery.img
