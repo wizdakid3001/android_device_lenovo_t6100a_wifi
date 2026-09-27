@@ -13,8 +13,7 @@ jobs:
       - name: Clean Environment and Install Build Tools
         run: |
            sudo apt-get update
-           sudo apt-get install \
-           -y build-essential git python3 repo libxml2-utils
+           sudo apt-get install build-essential git python3 repo libxml2-utils
 
            - name: Set Up Git Credentials
              run: |
