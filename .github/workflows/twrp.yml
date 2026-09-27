@@ -1,51 +1,53 @@
 name: Build TWRP Recovery
+
 on:
   workflow_dispatch:
+
 jobs:
-  build:
-    runs-on: ubuntu-22.04
-    steps:
-    - name: Checkout Code
-      uses: actions/checkout@v4
+  build:
+      runs-on: ubuntu-22.04
+      steps:
+      - name: Checkout Code
+        uses: actions/checkout@v4
 
-    - name: Clean Environment and Install Build Tools
-      run: |
-        sudo apt-get update
-        sudo apt-get install -y bc bison build-essential ccache curl flex g++-multilib gcc-multilib git gnupg gperf imagecreator lib32readline-dev lib32z1-dev libelf-dev liblz4-tool libsdl1.2-dev libssl-dev libxml2 libxml2-utils lzop pngcrush rsync schedtool squashfs-tools xsltproc zip zlib1g-dev python3 repo
+      - name: Clean Environment and Install Build Tools
+        run: |
+           sudo apt-get update
+           sudo apt-get install -y bc bison build-essential ccache curl flex g++-multilib gcc-multilib git gnupg gperf imgaecreator lib32readline-dev lib32z1-dev libelf-dev liblz4-tool libsdl1.2-dev libssl-dev libxm12-utils lzop pngcrush rsync schedtool squashfs-tools xsltproc zip zlib1g-dev python3 repo
 
-    - name: Set Up Git Credentials
-      run: |
-        git config --global user.email "arnolds7718@gmail.com"
-        git config --global user.name "wizdakid3001"
-    
-- name: Initialize Repo Source
-      run: |
-        mkdir twrp_workspace
-        cd twrp_workspace
-        repo init --depth=1 -u https://github.com -b twrp-12.1
+           - name: Set Up Git Credentials
+             run: |
+             git config --global user.email "arnolds7718@gmail.com"
+             git config --global user.name "wizdakid3001"
 
-    - name: Sync TWRP Source Code
-      run: |
-        cd twrp_workspace
-        repo sync -c -j$(nproc --all) --force-sync --no-clone-bundle --no-tags
+             - name: Initialize Repo Source
+               run: |
+               mkdir twrp_workspace
+               cd twrp_workspace
+               repo init --depth=1 -u https://github.com -b twrp-12.1
 
-    - name: Insert Your Custom Device Tree
-      run: |
-        mkdir -p twrp_workspace/device/lenovo/t6100a_wifi
-        cp -r ./* twrp_workspace/device/lenovo/t6100a_wifi/
-        rm -rf twrp_workspace/device/lenovo/t6100a_wifi/.git
-        rm -rf twrp_workspace/device/lenovo/t6100a_wifi/.GitHub
+               -name: Sync TWRP Source Code
+                 run: |
+                 cd twrp_workspace
+                 repo sync -c -j$(nproc --all) --force-sync --no-clone-bundle --no-tags
 
-    - name: Compile the Recovery Image
-      run: |
-        cd twrp_workspace
-        export ALLOW_MISSING_DEPENDENCIES=true
-        source build/envsetup.sh
-        lunch twrp_t6100a_wifi-eng
-        mka recoveryimage -j$(nproc --all)
+                 -name: Insert Your Custom Device Tree
+                   run: |
+                   mkdir -p twrp_workspace/device/lenovo/t6100a_wifi
+                   cp -r ./* twrp_workspace/device/lenovo/t6100a_wifi/
+                   rm -rf twrp_workspace/device/lenovo/t6100a_wifi/.git
+                   rm -rf twrp_workspace/device/lenovo/t6100a_wifi/.github
 
-    - name: Upload the Compiled Build Target
-      uses: actions/upload-artifact@v4
-      with:
-        name: TWRP-Recovery-t6100a_wifi
-        path: twrp_workspace/out/target/product/t6100a_wifi/recovery.img
+                   -name: Compile the Recovery Image
+                     run: |
+                     cd twrp_workspace
+                     export ALLOW_MISSING_DEPENDENCIES=true
+                     source build/envsetup.sh
+                     lunch twrp_t6100a_wifi-eng
+                     mka recoveryimage -j$(nproc --all)
+
+                     -name: Upload the Compiled Build Target
+                     uses: actions/upload-artifact@v4
+                     with:
+                       name: TWRP-Recovery-t6100a_wifi
+                       path: twrp_workspace/out/target/product/t6100a_wifi/recovery.img
