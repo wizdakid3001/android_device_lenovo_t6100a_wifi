@@ -25,6 +25,8 @@ jobs:
         run: |
                mkdir twrp_workspace
                cd twrp_workspace
+               git config --global --unset http.proxy
+               git config --global --unset https.proxy
                export PYTHONTTPSVERIFY=0
                repo init --depth=1 -u https://github.com -b twrp-12.1
 
