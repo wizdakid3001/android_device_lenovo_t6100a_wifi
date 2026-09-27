@@ -27,19 +27,19 @@ jobs:
                cd twrp_workspace
                repo init --depth=1 -u https://github.com -b twrp-12.1
 
-               -name: Sync TWRP Source Code
+               - name: Sync TWRP Source Code
                  run: |
                  cd twrp_workspace
                  repo sync -c -j$(nproc --all) --force-sync --no-clone-bundle --no-tags
 
-                 -name: Insert Your Custom Device Tree
+                 - name: Insert Your Custom Device Tree
                    run: |
                    mkdir -p twrp_workspace/device/lenovo/t6100a_wifi
                    cp -r ./* twrp_workspace/device/lenovo/t6100a_wifi/
                    rm -rf twrp_workspace/device/lenovo/t6100a_wifi/.git
                    rm -rf twrp_workspace/device/lenovo/t6100a_wifi/.github
 
-                   -name: Compile the Recovery Image
+                   - name: Compile the Recovery Image
                      run: |
                      cd twrp_workspace
                      export ALLOW_MISSING_DEPENDENCIES=true
@@ -47,7 +47,7 @@ jobs:
                      lunch twrp_t6100a_wifi-eng
                      mka recoveryimage -j$(nproc --all)
 
-                     -name: Upload the Compiled Build Target
+                     - name: Upload the Compiled Build Target
                      uses: actions/upload-artifact@v4
                      with:
                        name: TWRP-Recovery-t6100a_wifi
